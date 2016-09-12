@@ -28,15 +28,15 @@ init(N, FirstPid) when N > 0 ->
 init(0, FirstPid) ->
 	loop({ FirstPid }).
 
-loop({ NextProcess }) ->
+loop({ NextPid }) ->
 	%%io:format("I am ~p. My target is ~p.\n", [self(), NextProcess]),
 	receive
 		{ send, Ref, Client, Message, 0 } ->
 			%%io:format("loop received 'send' with ~p, ~p\n", [Message, 0]),
 			Client ! { complete, Ref, Message },
-			loop({ NextProcess });
+			loop({ NextPid });
 		{ send, Ref, Client, Message, N } ->
 			%%io:format("loop received 'send' with ~p, ~p\n", [Message, N]),
-			NextProcess ! { send, Ref, Client, Message, N - 1 },
-			loop({ NextProcess })
+			NextPid ! { send, Ref, Client, Message, N - 1 },
+			loop({ NextPid })
 	end.
