@@ -5,13 +5,6 @@
 make(N) ->
 	spawn(fun() -> init(N) end).
 
-init(N) ->
-	Self = self(),
-	NextPid = spawn(fun() -> init(N - 1, Self) end),
-	loop({ NextPid }).
-
-
-
 send(Ring, Message, N) ->
 	Ref = make_ref(),
 	Ring ! { send, Ref, self(), Message, N },
@@ -22,9 +15,15 @@ send(Ring, Message, N) ->
 			"Timeout"
 	end.
 
+init(N) ->
+	Self = self(),
+	NextPid = spawn(fun() -> init(N - 1, Self) end),
+	loop({ NextPid }).
+
 init(N, FirstPid) when N > 0 ->
 	NextPid = spawn(fun() -> init(N - 1, FirstPid) end),
 	loop({ NextPid });
+
 init(0, FirstPid) ->
 	loop({ FirstPid }).
 
