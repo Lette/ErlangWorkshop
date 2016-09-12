@@ -1,6 +1,6 @@
 -module(process_ring).
 
--export([make/1, send/3]).
+-export([make/1, send/3, send_with_timer/3]).
 
 make(N) ->
 	spawn(fun() -> init(N - 1) end).
@@ -15,6 +15,9 @@ send(Ring, Message, N) ->
 		after 5000 ->
 			"Timeout"
 	end.
+
+send_with_timer(Ring, Message, N) ->
+	timer:tc(process_ring, send, [Ring, Message, N]).
 
 init(N) ->
 	Self = self(),
