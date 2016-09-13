@@ -24,12 +24,12 @@ init(N) ->
 	NextPid = spawn(fun() -> init(N - 1, Self) end),
 	loop({ NextPid }).
 
-init(N, FirstPid) when N > 0 ->
-	NextPid = spawn(fun() -> init(N - 1, FirstPid) end),
-	loop({ NextPid });
-
 init(0, FirstPid) ->
-	loop({ FirstPid }).
+	loop({ FirstPid });
+
+init(N, FirstPid) ->
+	NextPid = spawn(fun() -> init(N - 1, FirstPid) end),
+	loop({ NextPid }).
 
 loop({ NextPid }) ->
 	%%io:format("I am ~p. My target is ~p.\n", [self(), NextProcess]),
